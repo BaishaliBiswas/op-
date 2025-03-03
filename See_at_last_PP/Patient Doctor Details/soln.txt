@@ -1,0 +1,136 @@
+public  class DoctorDetails {
+ private static String [][] specializationArr= {{"Ophthalmologist","Cardiologist","Dermatologist"},{"Eye","Heart","Skin"}};
+ private String doctorName;
+ public DoctorDetails(String doctorName){
+  this.doctorName=doctorName;
+ } 
+ public String getDoctorName() {
+  return this.doctorName;
+ }
+ public static String[][] getSpecializationArr() {
+  return DoctorDetails.specializationArr;
+ }
+ //To Trainees
+ public static String checkSpecialization(String areaOfTreatment) {
+  String specialization="NA";
+  //Implement your logic here
+  for(int i=0;i<specializationArr[1].length;i++){
+            if(areaOfTreatment.equalsIgnoreCase(specializationArr[1][i])){
+                return specializationArr[0][i];
+            }
+        }
+  return specialization;
+ }
+}
+public class InPatient extends Patient{
+ private static String[] wardDetailsArr = {"ICU","General","Special"};
+ private static int [] wardDetailsPriceArr= {2500,500,1000};
+ private String wardType;
+ private int noOfDays;
+ public InPatient(String patientName, String areaOfTreatment, String wardType, int noOfDays) {
+  super(patientName,areaOfTreatment);
+  this.wardType=wardType;
+  this.noOfDays=noOfDays;
+ }
+ public String getWardType() {
+  return this.wardType;
+ }
+ public int getNoOfDays() {
+  return this.noOfDays;
+ }
+ //To Trainees
+ public Integer wardChargePerDay() {
+  int  wardChargePerDay=-1;
+  //Implement your logic here
+  for(int i=0;i<wardDetailsArr.length;i++){
+            if(wardDetailsArr[i].equals(getWardType())){
+                wardChargePerDay=wardDetailsPriceArr[i];
+            }
+        }
+  //Change the return statement accordingly    
+  return wardChargePerDay;
+ }
+    //To Trainees
+ @Override
+ public void calculateBillAmount() {
+        int billAmount=0;
+        String patientId;
+        String specialization=null;
+        int wardChargePerDay=-1;
+        int consultationFee=0;
+        specialization= DoctorDetails.checkSpecialization(getAreaOfTreatment());
+        wardChargePerDay=wardChargePerDay();
+        if(specialization!=null && wardChargePerDay!=-1 && getNoOfDays()>0 && validatePatientName() ==true){
+            generatePatientId();
+            patientId=getPatientId();
+            if(specialization.equals("Ophthalmologist")){
+                consultationFee=400;
+            }
+            else if(specialization.equals("Cardiologist")){
+                consultationFee=800;
+            }
+             else if(specialization.equals("Dermatologist")){
+                consultationFee=500;
+            }
+            int wardCharge = noOfDays*wardChargePerDay+consultationFee;
+            billAmount=wardCharge;
+        }
+        else{
+            billAmount=-1;
+            patientId="NA";
+        }
+        setPatientId(patientId);
+        setBillAmount(billAmount);
+  //Implement your logic here
+ }
+}
+package progusingjavapart2;
+//DO NOT MODIFY THE CODE PROVIDED TO YOU
+public abstract class Patient {
+ private static int counter=1000;
+ private String patientId;
+ private String patientName;
+ private String areaOfTreatment;
+ private int billAmount;
+    static{
+        ++counter;
+    }
+ public Patient(String patientName, String areaOfTreatment) {
+  this.patientId=null;
+  this.patientName=patientName;
+  this.areaOfTreatment=areaOfTreatment;
+  this.billAmount=0;
+ }
+ public String getPatientId() {
+  return this.patientId;
+ }
+ public void setPatientId(String patientId) {
+  this.patientId = patientId;
+ }
+ public int getBillAmount() {
+  return this.billAmount;
+ }
+ public void setBillAmount(int billAmount) {
+  this.billAmount = billAmount;
+ }
+ public String getPatientName() {
+  return this.patientName;
+ }
+ public String getAreaOfTreatment() {
+  return this.areaOfTreatment;
+ }
+ public boolean validatePatientName() {
+  if (this.patientName.length()>=3){
+   return true;
+  }
+  else {
+   return false;
+  }
+ }
+ //To Trainees
+ public void generatePatientId() {
+        //Implement your logic here
+        patientId=patientName.toUppe. rCase().charAt(0)+Integer.toString(counter);
+ }
+ public abstract void calculateBillAmount(); 
+}
